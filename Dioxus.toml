@@ -4,6 +4,7 @@
 
 # HTML title tag content
 title = "hot_dog"
+base_path = "/hot_dog/"
 
 # include `assets` in web platform
 [web.resource]
