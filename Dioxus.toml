@@ -3,8 +3,8 @@
 [web.app]
 
 # HTML title tag content
-title = "hot_dog"
-base_path = "/hot_dog/"
+title = "posot_thai"
+base_path = "/posot_thai/"
 
 # include `assets` in web platform
 [web.resource]
