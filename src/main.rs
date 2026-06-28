@@ -27,7 +27,7 @@ fn App() -> Element {
                 div { class: "flex items-center gap-4",
                     // โลโก้คลินิก (ใช้รูป logo.jpg จากโฟลเดอร์ assets)
                     img {
-                        src: asset!("/assets/logo.jpg"),
+                        src: asset!("/assets/logo.jpeg"),
                         alt: "โลโก้พุทธโอสถ",
                         // ปรับขนาด (w-12 h-12) ทำให้เป็นวงกลม (rounded-full) พร้อมมีขอบบางๆ สีเข้าธีม
                         class: "w-12 h-12 rounded-full object-cover shadow-sm border-2 border-amber-700/20"

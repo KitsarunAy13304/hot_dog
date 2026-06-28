@@ -28,5 +28,6 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: target/dx/hot_dog/release/web/public
+          # แก้ไขชื่อโฟลเดอร์ตรงนี้เป็น posot_thai
+          folder: target/dx/posot_thai/release/web/public
           branch: gh-pages
