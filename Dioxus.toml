@@ -4,7 +4,8 @@
 
 # HTML title tag content
 title = "posot_thai"
-base_path = "/posot_thai/"
+# แก้ไข: เปลี่ยนจาก "/posot_thai/" เป็น "/" เพื่อให้เข้าผ่าน localhost:8080 ได้โดยตรง
+base_path = "/"
 
 # include `assets` in web platform
 [web.resource]

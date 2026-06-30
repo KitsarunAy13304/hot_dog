@@ -9,6 +9,12 @@ pub fn main() {
 
 #[component]
 fn App() -> Element {
+    // ---------------- REACTIVITY STATES ----------------
+    // สร้างตัวแปรเก็บสถานะว่าผู้ใช้กดเปิดฟอร์มจองหรือยัง
+    let mut show_booking_form = use_signal(|| false);
+    // สร้างตัวแปรเก็บข้อมูลชื่อที่ผู้ใช้พิมพ์
+    let mut patient_name = use_signal(|| String::new());
+
     rsx! {
         document::Link { rel: "stylesheet", href: TAILWIND_CSS }
         // นำเข้าฟอนต์ภาษาไทยเพื่อความมินิมอล (Prompt & Sarabun)
@@ -17,7 +23,7 @@ fn App() -> Element {
             href: "https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&family=Sarabun:ital,wght@0,300;0,400;1,400&display=swap" 
         }
         
-        // เราสามารถใช้ script ของ Tailwind CDN เพื่อให้มั่นใจว่า UI แสดงผล 100% (เผื่อระบบ build css ยังไม่ได้ตั้งค่า)
+        // เราสามารถใช้ script ของ Tailwind CDN เพื่อให้มั่นใจว่า UI แสดงผล 100% 
         document::Script { src: "https://cdn.tailwindcss.com" }
 
         div { class: "min-h-screen bg-[#Faf8f5] text-stone-800 font-['Prompt'] selection:bg-amber-200",
@@ -25,11 +31,10 @@ fn App() -> Element {
             // ---------------- NAVBAR ----------------
             nav { class: "flex items-center justify-between px-6 md:px-12 py-6 max-w-7xl mx-auto",
                 div { class: "flex items-center gap-4",
-                    // โลโก้คลินิก (ใช้รูป logo.jpg จากโฟลเดอร์ assets)
+                    // โลโก้คลินิก
                     img {
                         src: asset!("/assets/logo.jpeg"),
                         alt: "โลโก้พุทธโอสถ",
-                        // ปรับขนาด (w-12 h-12) ทำให้เป็นวงกลม (rounded-full) พร้อมมีขอบบางๆ สีเข้าธีม
                         class: "w-12 h-12 rounded-full object-cover shadow-sm border-2 border-amber-700/20"
                     }
                     div { class: "text-2xl font-semibold tracking-wide text-amber-800",
@@ -53,8 +58,48 @@ fn App() -> Element {
                 p { class: "text-stone-500 text-lg md:text-xl max-w-2xl mb-10 font-light leading-relaxed",
                     "คลินิกพุทธโอสถ พร้อมดูแลคุณด้วยศาสตร์การแพทย์แผนไทยประยุกต์ ให้คุณกลับมามีสุขภาพที่ดีอย่างยั่งยืน"
                 }
-                button { class: "bg-amber-700 hover:bg-amber-800 text-white px-8 py-4 rounded-full font-medium tracking-wide transition duration-300 shadow-md",
-                    "นัดหมายเข้ารับบริการ"
+
+                // --- ส่วนที่ใช้ REACTIVITY (ระบบฟอร์ม) ---
+                if show_booking_form() {
+                    // ถ้า show_booking_form เป็น true ให้แสดงฟอร์ม
+                    div { class: "bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-amber-100 flex flex-col gap-5 w-full max-w-md animate-fade-in",
+                        h3 { class: "text-xl font-medium text-amber-800", "กรุณาระบุชื่อเพื่อนัดหมาย" }
+                        input { 
+                            class: "border border-stone-300 rounded-lg px-4 py-3 focus:outline-none focus:border-amber-700 focus:ring-1 focus:ring-amber-700 transition",
+                            placeholder: "ชื่อ-นามสกุล",
+                            value: "{patient_name}",
+                            // เมื่อพิมพ์ตัวอักษร ให้อัปเดตสถานะ patient_name ทันที
+                            oninput: move |evt| patient_name.set(evt.value()) 
+                        }
+                        div { class: "flex gap-3 justify-center mt-2",
+                            button { 
+                                class: "bg-amber-700 hover:bg-amber-800 text-white px-6 py-2.5 rounded-full font-medium transition duration-300 flex-1",
+                                onclick: move |_| {
+                                    // แจ้งเตือนผ่าน Console (ในอนาคตเชื่อม Database ได้)
+                                    println!("กำลังจองคิวให้คุณ: {}", patient_name());
+                                    
+                                    // รีเซ็ตค่าเพื่อปิดฟอร์มและเคลียร์ชื่อ
+                                    show_booking_form.set(false);
+                                    patient_name.set(String::new());
+                                },
+                                "ยืนยันการจอง"
+                            }
+                            button { 
+                                class: "bg-stone-200 hover:bg-stone-300 text-stone-700 px-6 py-2.5 rounded-full font-medium transition duration-300 flex-1",
+                                // กดปุ่มนี้เพื่อปิดฟอร์ม
+                                onclick: move |_| show_booking_form.set(false),
+                                "ยกเลิก"
+                            }
+                        }
+                    }
+                } else {
+                    // ถ้าสถานะเป็น false ให้แสดงปุ่มปกติ
+                    button { 
+                        class: "bg-amber-700 hover:bg-amber-800 text-white px-8 py-4 rounded-full font-medium tracking-wide transition duration-300 shadow-md",
+                        // กดแล้วเปลี่ยนสถานะเป็น true เพื่อเปิดฟอร์ม
+                        onclick: move |_| show_booking_form.set(true),
+                        "นัดหมายเข้ารับบริการ"
+                    }
                 }
             }
 
